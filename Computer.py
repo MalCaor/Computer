@@ -25,7 +25,9 @@ client = discord.Client()
 rssTest = "http://www.reddit.com/r/python/.rss"
 Allrss = ["http://www.reddit.com/r/python/.rss",
     "https://www.reddit.com/r/programming/.rss",
-    "https://www.reddit.com/r/AskProgramming/.rss"]
+    "https://www.reddit.com/r/AskProgramming/.rss",
+    "https://www.reddit.com/r/linux/.rss",
+    "https://feeds.feedburner.com/TheHackersNews.rss"]
 
 feed = feedparser.parse(rssTest)
 Allfeed = []
@@ -60,19 +62,21 @@ async def on_message(message):
 
     # Array Feed Top
     if message.content.startswith('!feedTop'):
-        y = 3
-        if message.content.replace('!feedTop', ''):
-            num = message.content.replace('!feedTop ', '')
-            if isinstance(int(num), int):
-                y = int(num)
-
-        if y > len(Allrss):
-            msg = "Too big index, the current array lenght is " + str(len(Allrss))
-        else:
+        y = len(Allrss)
+        if "Desc" in message.content :
+            msg = ""
+            for x in range(len(Allrss) - (len(Allrss)-y)):
+                msg = msg + Allfeed[x]['feed']['subtitle'] + "\n"
+        elif "Name" in message.content :
             msg = ""
             for x in range(len(Allrss) - (len(Allrss)-y)):
                 msg = msg + Allfeed[x]['feed']['title'] + "\n"
+        elif "Link" in message.content :
+            msg = ""
+            for x in range(len(Allrss) - (len(Allrss)-y)):
+                msg = msg + Allfeed[x]['feed']['link'] + "\n"
 
         await message.channel.send(msg)
+
 
 client.run(token)
