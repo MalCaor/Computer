@@ -29,6 +29,9 @@ Allrss = ["http://www.reddit.com/r/python/.rss",
     "https://www.reddit.com/r/linux/.rss",
     "https://feeds.feedburner.com/TheHackersNews.rss"]
 
+# git depot
+repoGit = "https://github.com/MalCaor/Computer"
+
 feed = feedparser.parse(rssTest)
 Allfeed = []
 for rss in Allrss:
@@ -43,6 +46,10 @@ async def on_message(message):
 
     if message.content.startswith('!hello'):
         msg = 'Hello {0.author.mention}'.format(message)
+        await message.channel.send(msg)
+
+    if message.content.startswith('!git'):
+        msg = "Here is the github repo " + repoGit
         await message.channel.send(msg)
 
     # Name Feed Test
@@ -66,15 +73,15 @@ async def on_message(message):
         if "Desc" in message.content :
             msg = ""
             for x in range(len(Allrss) - (len(Allrss)-y)):
-                msg = msg + Allfeed[x]['feed']['subtitle'] + "\n"
+                msg = msg + "* "+Allfeed[x]['feed']['subtitle'] + "\n"
         elif "Name" in message.content :
             msg = ""
             for x in range(len(Allrss) - (len(Allrss)-y)):
-                msg = msg + Allfeed[x]['feed']['title'] + "\n"
+                msg = msg + "* "+Allfeed[x]['feed']['title'] + "\n"
         elif "Link" in message.content :
             msg = ""
             for x in range(len(Allrss) - (len(Allrss)-y)):
-                msg = msg + Allfeed[x]['feed']['link'] + "\n"
+                msg = msg + "* "+Allfeed[x]['feed']['link'] + "\n"
 
         await message.channel.send(msg)
 
