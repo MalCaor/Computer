@@ -23,11 +23,7 @@ client = discord.Client()
 
 # rss feed
 rssTest = "http://www.reddit.com/r/python/.rss"
-Allrss = ["http://www.reddit.com/r/python/.rss",
-    "https://www.reddit.com/r/programming/.rss",
-    "https://www.reddit.com/r/AskProgramming/.rss",
-    "https://www.reddit.com/r/linux/.rss",
-    "https://feeds.feedburner.com/TheHackersNews.rss"]
+Allrss = conf['Allrss']
 
 # git depot
 repoGit = "https://github.com/MalCaor/Computer"
@@ -35,7 +31,8 @@ repoGit = "https://github.com/MalCaor/Computer"
 feed = feedparser.parse(rssTest)
 Allfeed = []
 for rss in Allrss:
-    Allfeed.append(feedparser.parse(rss))
+    print(rss)
+    Allfeed.append(feedparser.parse(rss['url']))
 
 # message event
 @client.event
@@ -46,6 +43,12 @@ async def on_message(message):
 
     if message.content.startswith('!hello'):
         msg = 'Hello {0.author.mention}'.format(message)
+        await message.channel.send(msg)
+
+    if message.content.startswith('!num'):
+        msg = "false"
+        if any(char.isdigit() for char in message.content):
+            msg = "true"
         await message.channel.send(msg)
 
     if message.content.startswith('!git'):
@@ -70,7 +73,15 @@ async def on_message(message):
     # Array Feed Top
     if message.content.startswith('!feedTop'):
         y = len(Allrss)
-        if "Desc" in message.content :
+        if any(char.isdigit() for char in message.content):
+            y = ""
+            for char in message.content:
+                if char.isdigit():
+                    y = y + char
+            y = int(y)
+        if y > len(Allrss):
+            msg = "num too big, the current lenght is " + len(Allrss)
+        elif "Desc" in message.content :
             msg = ""
             for x in range(len(Allrss) - (len(Allrss)-y)):
                 msg = msg + "* "+Allfeed[x]['feed']['subtitle'] + "\n"
@@ -83,6 +94,7 @@ async def on_message(message):
             for x in range(len(Allrss) - (len(Allrss)-y)):
                 msg = msg + "* "+Allfeed[x]['feed']['link'] + "\n"
 
+        #msg = str(y)
         await message.channel.send(msg)
 
 
