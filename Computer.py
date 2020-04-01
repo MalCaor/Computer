@@ -31,7 +31,6 @@ repoGit = "https://github.com/MalCaor/Computer"
 feed = feedparser.parse(rssTest)
 Allfeed = []
 for rss in Allrss:
-    print(rss)
     Allfeed.append(feedparser.parse(rss['url']))
 
 # message event
@@ -70,28 +69,38 @@ async def on_message(message):
         msg = feed['feed']['link']
         await message.channel.send(msg)
 
+    if message.content.startswith('!feedAdd'):
+        newfeedstr = message.content.replace('!feedAdd ', '')
+        newfeed = feedparser.parse(newfeedstr)
+        if('title' in newfeed.feed):
+            Allfeed.append(newfeed)
+            msg = 'feed have been add'
+        else:
+            msg = 'error feed incorect'
+        await message.channel.send(msg)
+
     # Array Feed Top
     if message.content.startswith('!feedTop'):
-        y = len(Allrss)
+        y = len(Allfeed)
         if any(char.isdigit() for char in message.content):
             y = ""
             for char in message.content:
                 if char.isdigit():
                     y = y + char
             y = int(y)
-        if y > len(Allrss):
-            msg = "num too big, the current lenght is " + len(Allrss)
+        if y > len(Allfeed):
+            msg = "num too big, the current lenght is " + len(Allfeed)
         elif "Desc" in message.content :
             msg = ""
-            for x in range(len(Allrss) - (len(Allrss)-y)):
+            for x in range(len(Allfeed) - (len(Allfeed)-y)):
                 msg = msg + "* "+Allfeed[x]['feed']['subtitle'] + "\n"
         elif "Name" in message.content :
             msg = ""
-            for x in range(len(Allrss) - (len(Allrss)-y)):
+            for x in range(len(Allfeed) - (len(Allfeed)-y)):
                 msg = msg + "* "+Allfeed[x]['feed']['title'] + "\n"
         elif "Link" in message.content :
             msg = ""
-            for x in range(len(Allrss) - (len(Allrss)-y)):
+            for x in range(len(Allfeed) - (len(Allfeed)-y)):
                 msg = msg + "* "+Allfeed[x]['feed']['link'] + "\n"
 
         #msg = str(y)
