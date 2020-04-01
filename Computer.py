@@ -11,7 +11,7 @@ import feedparser
 
 import time
 
-import asyncio
+import threading
 
 # read file
 with open('config.json', 'r') as myfile:
@@ -43,7 +43,7 @@ Allfeed = []
 for rss in Allrss:
     Allfeed.append(feedparser.parse(rss['url']))
 
-update = True
+update = False
 
 # message event
 @client.event
@@ -93,6 +93,17 @@ async def on_message(message):
         msg = feed.feed.subtitle
         await message.channel.send(msg)
 
+    if mess.startswith('!startpost'):
+        up.start()
+        up.update()
+        msg = 'I post'
+        await message.channel.send(msg)
+
+    if mess.startswith('!stoppost'):
+        up.stop()
+        msg = 'Iv stop posting'
+        await message.channel.send(msg)
+
     # Link Feed Test
     if mess.startswith('!feedtestlink'):
         msg = feed['feed']['link']
@@ -137,23 +148,25 @@ async def on_message(message):
 
 
 # UPDATE
-async def updatePost():
-    while update:
-        msg = ''
-        for feed in Allfeed:
-            i = 0
-            for post in feed.entries:
-                if post not in usedpost:
-                    # print the post
-                    msg = msg + post.title
-                    if chan != None:
-                        chan.send(msg)
-                    # only 5 post per time
-                    i = i + 1
-                    if(i>5):
-                        break
+class updatePost (threading.Thread):
+    def update(lol):
+        while update:
+            msg = ''
+            for feed in Allfeed:
+                i = 0
+                for post in feed.entries:
+                    if post not in usedpost:
+                        # print the post
+                        msg = msg + post.title
+                        if chan != None:
+                            chan.send(msg)
+                        # only 5 post per time
+                        i = i + 1
+                        if(i>5):
+                            break
+    def stop(self):
+        self._stop_event.set()
 
-loop.create_task()
-loop.run_until_complete(updatePost())
+up = updatePost()
 
 client.run(token)
