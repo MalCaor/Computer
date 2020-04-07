@@ -48,6 +48,8 @@ update = False
 # message event
 @client.event
 async def on_message(message):
+    global update
+
     # we do not want the bot to reply to itself
     if message.author == client.user:
         return
@@ -69,16 +71,6 @@ async def on_message(message):
             msg = "true"
         await message.channel.send(msg)
 
-    if mess.startswith('!stopupdate'):
-        update = False
-        msg = 'update have been stop'
-        await message.channel.send(msg)
-
-    if mess.startswith('!startupdate'):
-        update = True
-        msg = 'update starting'
-        await message.channel.send(msg)
-
     if mess.startswith('!git'):
         msg = "Here is the github repo " + repoGit
         await message.channel.send(msg)
@@ -94,13 +86,14 @@ async def on_message(message):
         await message.channel.send(msg)
 
     if mess.startswith('!startpost'):
+        update = True
         up.start()
         up.update()
         msg = 'I post'
         await message.channel.send(msg)
 
     if mess.startswith('!stoppost'):
-        up.stop()
+        update = False
         msg = 'Iv stop posting'
         await message.channel.send(msg)
 
@@ -150,20 +143,32 @@ async def on_message(message):
 # UPDATE
 class updatePost (threading.Thread):
     def update(lol):
+        print('update')
+        global update
         while update:
+            print('update is true')
             msg = ''
             for feed in Allfeed:
+                time.sleep(1)
                 i = 0
+                print('the feed')
                 for post in feed.entries:
+                    time.sleep(2)
+                    print('the post')
                     if post not in usedpost:
+                        print('post is not post')
                         # print the post
                         msg = msg + post.title
                         if chan != None:
                             chan.send(msg)
+                            print('post')
+                        else:
+                            print('none')
                         # only 5 post per time
                         i = i + 1
                         if(i>5):
                             break
+        time.sleep(60)
     def stop(self):
         self._stop_event.set()
 
