@@ -49,6 +49,8 @@ update = False
 @client.event
 async def on_message(message):
     global update
+    global Allfeed
+    global chan
 
     # we do not want the bot to reply to itself
     if message.author == client.user:
@@ -90,6 +92,13 @@ async def on_message(message):
         up.start()
         up.update()
         msg = 'I post'
+        await message.channel.send(msg)
+
+    if mess.startswith('!sup'):
+        if update:
+            msg = 'True'
+        else:
+            msg = 'False'
         await message.channel.send(msg)
 
     if mess.startswith('!stoppost'):
@@ -160,7 +169,7 @@ class updatePost (threading.Thread):
                         # print the post
                         msg = msg + post.title
                         if chan != None:
-                            chan.send(msg)
+                            await chan.send(msg)
                             print('post')
                         else:
                             print('none')
