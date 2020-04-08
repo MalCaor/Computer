@@ -90,8 +90,7 @@ async def on_message(message):
     if mess.startswith('!startpost'):
         update = True
         up.start()
-        await up.update()
-        msg = 'I post'
+        r = await up.update()
         await message.channel.send(msg)
 
     if mess.startswith('!sup'):
@@ -155,6 +154,7 @@ class updatePost (threading.Thread):
         print('update')
         global update
         global chan
+        global usedpost
         while update:
             print('update is true')
             for feed in Allfeed:
@@ -164,6 +164,8 @@ class updatePost (threading.Thread):
                 for post in feed.entries:
                     print('the post')
                     if post not in usedpost:
+                        #enter it in use
+                        usedpost.append(post)
                         # print the post
                         msg = post.title
                         await chan.send(msg)
@@ -171,7 +173,8 @@ class updatePost (threading.Thread):
                         i = i + 1
                         if(i>5):
                             break
-            time.sleep(60)
+            time.sleep(5)
+
 
     def stop(self):
         self._stop_event.set()
