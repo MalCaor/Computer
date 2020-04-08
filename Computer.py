@@ -167,8 +167,14 @@ class updatePost (threading.Thread):
                         #enter it in use
                         usedpost.append(post)
                         # print the post
-                        msg = post.title
+                        msg = '-----\n'
+                        msg = msg + "+++ **" + post.title + "** +++" + "\n"
+                        msg = msg + "+ *" + post.author + "* +" + "\n"
+                        msg = msg + post.summary + "\n"
+                        msg = msg + post.link + "\n"
+                        msg = msg + '-----\n'
                         await chan.send(msg)
+                        time.sleep(1)
                         # only 5 post per time
                         i = i + 1
                         if(i>5):
