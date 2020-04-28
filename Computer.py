@@ -177,12 +177,12 @@ class updatePost (threading.Thread):
                             await chan.send(msg)
                         except :
                             await chan.send("error")
-                        time.sleep(1)
+                        time.sleep(5)
                         # only 5 post per time
                         i = i + 1
                         if(i>5):
                             break
-            time.sleep(5)
+            time.sleep(30)
 
 
     def stop(self):
