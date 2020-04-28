@@ -173,7 +173,10 @@ class updatePost (threading.Thread):
                         msg = msg + post.summary + "\n"
                         msg = msg + post.link + "\n"
                         msg = msg + '-----\n'
-                        await chan.send(msg)
+                        try :
+                            await chan.send(msg)
+                        except :
+                            await chan.send("error")
                         time.sleep(1)
                         # only 5 post per time
                         i = i + 1
